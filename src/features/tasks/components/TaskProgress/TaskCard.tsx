@@ -1,8 +1,11 @@
 import React from 'react'
+// Hapus import {useRecoilState} from 'recoil'
+// Hapus import {tasksState} from '../../TaskAtoms'
+// import { useRecoilState } from 'recoil'
+// import { tasksState } from '../../TaskAtoms'
 import type { Task, CSSProperties } from '../../../../types'
 import { TASK_PROGRESS_ID } from '../../../../constants/app'
-import { useRecoilState } from 'recoil' // Ditambahkan
-import { tasksState } from '../../TaskAtoms' // Ditambahkan
+import { useTasksAction } from '../../hooks/Tasks' // Ditambahkan
 
 interface TaskCardProps {
   task: Task
@@ -34,16 +37,19 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 }
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  // Ditambahkan
-  const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
+  // Hapus const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
+  // Hapus const completeTask = (taskId: number): void => {...}
 
-  // Definisikan function ini
-  const completeTask = (taskId: number): void => {
-    const updatedTasks: Task[] = tasks.map((task) =>
-      task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task
-    )
-    setTasks(updatedTasks)
-  }
+  // const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
+
+  // const completeTask = (taskId: number): void => {
+  //   const updatedTasks: Task[] = tasks.map((task) =>
+  //     task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task
+  //   )
+  //   setTasks(updatedTasks)
+  // }
+
+  const { completeTask } = useTasksAction() // Ditambahkan
 
   return (
     <div style={styles.taskCard}>
