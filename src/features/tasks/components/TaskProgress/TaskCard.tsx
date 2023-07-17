@@ -50,6 +50,7 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
   // }
 
   const { completeTask } = useTasksAction() // Ditambahkan
+  const { moveTaskCard } = useTasksAction() // Ditambahkan
 
   return (
     <div style={styles.taskCard}>
@@ -78,10 +79,24 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
       <div style={getArrowPositionStyle(task.progressOrder)}>
         {/* Raw data telah digantikan */}
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
-          <button className="material-icons">chevron_left</button>
+          <button
+            className="material-icons"
+            onClick={(): void => {
+              moveTaskCard(task.id, -1) // Ditambahkan
+            }}
+          >
+            chevron_left
+          </button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
-          <button className="material-icons">chevron_right</button>
+          <button
+            className="material-icons"
+            onClick={(): void => {
+              moveTaskCard(task.id, 1) // Ditambahkan
+            }}
+          >
+            chevron_right
+          </button>
         )}
       </div>
     </div>
