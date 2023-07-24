@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react' // useState ditambahkan
 import TaskCard from './TaskCard'
 import type { Task, CSSProperties } from '../../../../types'
+import TaskModal from '../shared/TaskModal' // Ditambahkan
+import { TASK_MODAL_TYPE } from '../../../../constants/app' // Ditambahkan
 
 interface TaskColumnProps {
   columnTitle: string
@@ -8,11 +10,20 @@ interface TaskColumnProps {
 }
 
 const TaskColumn = ({ columnTitle, tasks }: TaskColumnProps): JSX.Element => {
+  // Ditambahkan
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
   return (
     <div style={styles.categoryColumn}>
       <div style={styles.columnTitleWrapper}>
         <h2 style={styles.categoryTitle}>{columnTitle}</h2>
-        <div className="material-icons" style={styles.plusIcon}>
+        <div
+          className="material-icons"
+          style={styles.plusIcon}
+          onClick={(): void => {
+            setIsModalOpen(true) // Ditambahkan
+          }}
+        >
           add
         </div>
       </div>
@@ -21,6 +32,18 @@ const TaskColumn = ({ columnTitle, tasks }: TaskColumnProps): JSX.Element => {
           return <TaskCard key={task.id} task={task} />
         })}
       </div>
+      {/* Ditambahkan */}
+      {isModalOpen &&
+        tasks.map((task: Task) => {
+          return (
+            <TaskModal
+              headingTitle="Add your task"
+              type={TASK_MODAL_TYPE.ADD} // Ditambahkan
+              setIsModalOpen={setIsModalOpen}
+              defaultProgressOrder={task.progressOrder}
+            />
+          )
+        })}
     </div>
   )
 }
