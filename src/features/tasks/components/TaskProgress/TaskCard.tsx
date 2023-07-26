@@ -1,17 +1,13 @@
-import React from 'react'
-// Hapus import {useRecoilState} from 'recoil'
-// Hapus import {tasksState} from '../../TaskAtoms'
-// import { useRecoilState } from 'recoil'
-// import { tasksState } from '../../TaskAtoms'
+import React, { useState } from 'react'
+import TaskMenu from '../shared/TaskMenu'
 import type { Task, CSSProperties } from '../../../../types'
 import { TASK_PROGRESS_ID } from '../../../../constants/app'
-import { useTasksAction } from '../../hooks/Tasks' // Ditambahkan
+import { useTasksAction } from '../../hooks/Tasks'
 
 interface TaskCardProps {
   task: Task
 }
 
-// Definisikan function ini
 const getIconStyle = (progressOrder: number): React.CSSProperties => {
   const color: '#55C89F' | '#C5C5C5' =
     progressOrder === TASK_PROGRESS_ID.COMPLETED ? '#55C89F' : '#C5C5C5'
@@ -28,7 +24,6 @@ const getIconStyle = (progressOrder: number): React.CSSProperties => {
 
 const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
   const justifyContentValue: 'flex-end' | 'space-between' =
-    // Raw data telah digantikan
     progressOrder === TASK_PROGRESS_ID.NOT_STARTED ? 'flex-end' : 'space-between'
   return {
     display: 'flex',
@@ -37,35 +32,29 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 }
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  // Hapus const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
-  // Hapus const completeTask = (taskId: number): void => {...}
+  const { completeTask, moveTaskCard } = useTasksAction()
 
-  // const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
-
-  // const completeTask = (taskId: number): void => {
-  //   const updatedTasks: Task[] = tasks.map((task) =>
-  //     task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task
-  //   )
-  //   setTasks(updatedTasks)
-  // }
-
-  const { completeTask } = useTasksAction() // Ditambahkan
-  const { moveTaskCard } = useTasksAction() // Ditambahkan
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   return (
     <div style={styles.taskCard}>
       <div style={styles.taskIcons}>
-        {/* Diperbarui */}
         <div
           className="material-icons"
           style={getIconStyle(task.progressOrder)}
           onClick={(): void => {
-            completeTask(task.id) // Ditambahkan
+            completeTask(task.id)
           }}
         >
           check_circle
         </div>
-        <div className="material-icons" style={styles.menuIcon}>
+        <div
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_vert
         </div>
       </div>
@@ -77,12 +66,11 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
         <p>Due on {task.dueDate}</p>
       </div>
       <div style={getArrowPositionStyle(task.progressOrder)}>
-        {/* Raw data telah digantikan */}
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
           <button
             className="material-icons"
             onClick={(): void => {
-              moveTaskCard(task.id, -1) // Ditambahkan
+              moveTaskCard(task.id, -1)
             }}
           >
             chevron_left
@@ -92,13 +80,14 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
           <button
             className="material-icons"
             onClick={(): void => {
-              moveTaskCard(task.id, 1) // Ditambahkan
+              moveTaskCard(task.id, 1)
             }}
           >
             chevron_right
           </button>
         )}
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen} task={task} />}
     </div>
   )
 }

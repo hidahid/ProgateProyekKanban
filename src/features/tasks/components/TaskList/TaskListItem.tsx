@@ -1,17 +1,13 @@
-import React from 'react'
-// Hapus import {useRecoilState} from 'recoil'
-// Hapus import {tasksState} from '../../TaskAtoms'
-// import { useRecoilState } from 'recoil'
-// import { tasksState } from '../../TaskAtoms'
+import React, { useState } from 'react'
 import type { Task, CSSProperties } from '../../../../types'
 import { TASK_PROGRESS_STATUS, TASK_PROGRESS_ID } from '../../../../constants/app'
-import { useTasksAction } from '../../hooks/Tasks' // Ditambahkan
+import { useTasksAction } from '../../hooks/Tasks'
+import TaskMenu from '../shared/TaskMenu'
 
 interface TaskListItemProps {
   task: Task
 }
 
-// Definisikan function ini
 const getIconStyle = (progressOrder: number): React.CSSProperties => {
   const color: '#55C89F' | '#C5C5C5' =
     progressOrder === TASK_PROGRESS_ID.COMPLETED ? '#55C89F' : '#C5C5C5'
@@ -27,7 +23,6 @@ const getIconStyle = (progressOrder: number): React.CSSProperties => {
   }
 }
 
-// Ditambahkan
 const getProgressCategory = (progressOrder: number): string => {
   switch (progressOrder) {
     case TASK_PROGRESS_ID.NOT_STARTED:
@@ -44,19 +39,9 @@ const getProgressCategory = (progressOrder: number): string => {
 }
 
 const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
-  // Hapus const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
-  // Hapus const completeTask = (taskId: number): void => {...}
+  const { completeTask } = useTasksAction()
 
-  // const [tasks, setTasks] = useRecoilState<Task[]>(tasksState)
-
-  // const completeTask = (taskId: number): void => {
-  //   const updatedTasks: Task[] = tasks.map((task) =>
-  //     task.id === taskId ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED } : task
-  //   )
-  //   setTasks(updatedTasks)
-  // }
-
-  const { completeTask } = useTasksAction() // Ditambahkan
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   return (
     <div style={styles.tableBody}>
@@ -76,10 +61,17 @@ const TaskListItem = ({ task }: TaskListItemProps): JSX.Element => {
       <div style={styles.tableBodyDueDate}>{task.dueDate}</div>
       <div style={styles.tableBodyprogress}>{getProgressCategory(task.progressOrder)}</div>
       <div>
-        <span className="material-icons" style={styles.menuIcon}>
+        <span
+          className="material-icons"
+          style={styles.menuIcon}
+          onClick={(): void => {
+            setIsMenuOpen(true)
+          }}
+        >
           more_horiz
         </span>
       </div>
+      {isMenuOpen && <TaskMenu setIsMenuOpen={setIsMenuOpen} task={task} />}
     </div>
   )
 }

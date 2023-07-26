@@ -1,30 +1,46 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { TASK_PROGRESS_ID, TASK_PROGRESS_STATUS, TASK_MODAL_TYPE } from '../../../../constants/app'
-import type { CSSProperties } from '../../../../types'
-import { useTasksAction } from '../../hooks/Tasks' // Ditambahkan
-import type { Dispatch, SetStateAction } from 'react' // Ditambahkan
+import type { CSSProperties, Task } from '../../../../types'
+import { useTasksAction } from '../../hooks/Tasks'
+import type { Dispatch, SetStateAction } from 'react'
 
 interface TaskFormProps {
-  type: string // Ditambahkan
+  type: string
   defaultProgressOrder: number
-  setIsModalOpen: Dispatch<SetStateAction<boolean>> // Ditambahkan
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>
+  selectedData: Task
 }
 
-const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen }: TaskFormProps): JSX.Element => {
-  const [title, setTitle] = useState<string>('')
-  const [detail, setDetail] = useState<string>('')
-  const [dueDate, setDueDate] = useState<string>('')
-  const [progressOrder, setProgressOrder] = useState<number>(defaultProgressOrder)
+const TaskForm = ({
+  type,
+  defaultProgressOrder,
+  setIsModalOpen,
+  selectedData,
+}: TaskFormProps): JSX.Element => {
+  const isEditMode = type === TASK_MODAL_TYPE.EDIT // Fitur Edit Task
 
-  // Ditambahkan
-  const { addTask } = useTasksAction()
+  const [title, setTitle] = useState<string>(isEditMode ? selectedData.title : '')
+  const [detail, setDetail] = useState<string>(isEditMode ? selectedData.detail : '')
+  const [dueDate, setDueDate] = useState<string>(isEditMode ? selectedData.dueDate : '')
+  const [progressOrder, setProgressOrder] = useState<number>(
+    isEditMode ? selectedData.progressOrder : defaultProgressOrder
+  )
 
-  // Definisikan function ini
+  const { addTask, updateTask } = useTasksAction()
+
   const handleSubmit = (): void => {
     if (type === TASK_MODAL_TYPE.ADD) {
-      // Jalankan function addTask di sini
-      addTask(title, detail, dueDate, progressOrder) // Ditambahkan
-      setIsModalOpen(false) // Ditambahkan
+      addTask(title, detail, dueDate, progressOrder)
+      setIsModalOpen(false)
+    } else {
+      updateTask({
+        id: selectedData.id,
+        title,
+        detail,
+        dueDate,
+        progressOrder,
+      })
+      setIsModalOpen(false)
     }
   }
 
@@ -81,7 +97,7 @@ const TaskForm = ({ type, defaultProgressOrder, setIsModalOpen }: TaskFormProps)
         type="button"
         style={styles.button}
         onClick={(): void => {
-          handleSubmit() // Ditambahkan
+          handleSubmit()
         }}
       >
         Submit
