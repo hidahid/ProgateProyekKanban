@@ -6,13 +6,14 @@ import { TASK_PROGRESS_ID } from '../../../constants/app'
 interface useTaskActionType {
   completeTask: (taskId: number) => void
   moveTaskCard: (taskId: number, directionNumber: 1 | -1) => void
-  // Ditambahkan
   addTask: (
     title: string,
     detail: string,
     dueDate: string,
     progressOrder: number,
   ) => void
+  updateTask: (body: Task) => void
+  deleteTask: (taskId: number) => void
 }
 
 export const useTasksAction = (): useTaskActionType => {
@@ -42,7 +43,6 @@ export const useTasksAction = (): useTaskActionType => {
     setTasks(updatedTasks)
   }
 
-  // Ditambahkan
   const addTask = (
     title: string,
     detail: string,
@@ -59,10 +59,23 @@ export const useTasksAction = (): useTaskActionType => {
     setTasks([...tasks, newTask])
   }
 
+  const updateTask = (body: Task): void => {
+    const updatedTasks: Task[] = tasks.map((task) => (task.id === body.id ? { ...body } : task))
+    setTasks(updatedTasks)
+  }
+
+  const deleteTask = (taskId: number): void => {
+    const updatedTasks: Task[] = tasks.filter((task) =>
+      task.id !== taskId
+    )
+    setTasks(updatedTasks)
+  }
 
   return {
     completeTask,
     moveTaskCard,
-    addTask, // Ditambahkan
+    addTask,
+    updateTask,
+    deleteTask,
   }
 }
