@@ -1,4 +1,3 @@
-import React from 'react'
 import { RecoilRoot } from 'recoil' // Ditambahkan
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SideMenuLayout from './layouts/SideMenuLayout'
