@@ -26,7 +26,7 @@ export const useTasksAction = (): useTaskActionType => {
         : task,
     )
 
-    
+
     setTasks(updatedTasks)
   }
 
@@ -52,7 +52,7 @@ export const useTasksAction = (): useTaskActionType => {
     const lastData = tasks[tasks.length - 1]
     // const lastData = [...tasks].sort((a,b) => b.id - a.id)[0]
     const newTask: Task = {
-      id: lastData.id + 1,
+      id: lastData?.id ? lastData.id + 1 : 1,
       title,
       detail,
       dueDate,
